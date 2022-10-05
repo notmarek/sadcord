@@ -127,9 +127,9 @@ jobs:
 
   release:
     name: Release
-    needs:
-      - test-linux
-      - test-win
+    needs: build
+      # - test-linux
+      # - test-win
     runs-on: ubuntu-latest
 
     steps:
