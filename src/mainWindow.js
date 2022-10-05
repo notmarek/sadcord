@@ -64,20 +64,53 @@ const themesync = async () => {
     if (value !== pastValue)
         DiscordNative.userDataCache.cacheUserData(JSON.stringify(cached));
 };
+var FluxDispatcher = findModule("_dispatcher")._dispatcher;
 
-setTimeout(() => {
-    findModule("getCurrentUser").getCurrentUser().premiumType = 2;
-    var FluxDispatcher = findModule("_dispatcher").default._dispatcher;
-    FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_DELETE.find(
-        (h) => h.name === "MessageStore"
-    ).actionHandler = (args) => {
-        try {
-            document.querySelector(`#chat-messages-${args.id}`).style =
-                "background-color: black;";
-            document.querySelector(`#message-content-${args.id}`).style =
-                "color: red;";
-        } catch {}
-    };
+var applyPatches = () => {
+  findModule("getCurrentUser").getCurrentUser().premiumType = 2;
+
+  let wpRequire;
+  window.webpackChunkdiscord_app.push([
+      [Math.random()],
+      {},
+      (e) => {
+          wpRequire = e;
+      },
+  ]),
+      (mod = Object.values(wpRequire.c).find(
+          (e) => void 0 !== e?.exports?.Z?.isDeveloper
+      )),
+      (usermod = Object.values(wpRequire.c).find(
+          (e) => e?.exports?.default?.getUsers
+      )),
+      (nodes = Object.values(
+          mod.exports.Z._dispatcher._actionHandlers._dependencyGraph.nodes
+      ));
+  try {
+      nodes
+          .find((e) => "ExperimentStore" == e.name)
+          .actionHandler.OVERLAY_INITIALIZE({ user: { flags: 1 } });
+  } catch (e) {}
+  (oldGetUser = usermod.exports.default.__proto__.getCurrentUser),
+      (usermod.exports.default.__proto__.getCurrentUser = () => ({
+          hasFlag: () => !0,
+      })),
+      nodes
+          .find((e) => "DeveloperExperimentStore" == e.name)
+          .actionHandler.CONNECTION_OPEN(),
+      (usermod.exports.default.__proto__.getCurrentUser = oldGetUser);
+
+  console.log("%cSadCord Activated!", "font-size: 45px");
+  console.log("%cExperiments Enabled!", "font-size: 30px");
+  console.log("%cNitro Spoofed!", "font-size: 30px");
+}
+
+applyPatches();
+FluxDispatcher.setInterceptor((e)=>{
+  if (window.edit_logger && window.delete_logger) {
+    FluxDispatcher.setInterceptor(() => {});
+  }
+  if (!window.edit_logger && e.type === "MESSAGE_UPDATE") {
     FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_UPDATE.find(
         (h) => h.name === "MessageStore"
     ).actionHandler = (args) => {
@@ -96,43 +129,33 @@ setTimeout(() => {
             buttonContainer.style = "color: white;";
             messageContent.innerText += "\n" + args.message.content;
         } catch {}
-    };
-    let wpRequire;
-    window.webpackChunkdiscord_app.push([
-        [Math.random()],
-        {},
-        (e) => {
-            wpRequire = e;
-        },
-    ]),
-        (mod = Object.values(wpRequire.c).find(
-            (e) => void 0 !== e?.exports?.Z?.isDeveloper
-        )),
-        (usermod = Object.values(wpRequire.c).find(
-            (e) => e?.exports?.default?.getUsers
-        )),
-        (nodes = Object.values(
-            mod.exports.Z._dispatcher._actionHandlers._dependencyGraph.nodes
-        ));
-    try {
-        nodes
-            .find((e) => "ExperimentStore" == e.name)
-            .actionHandler.OVERLAY_INITIALIZE({ user: { flags: 1 } });
-    } catch (e) {}
-    (oldGetUser = usermod.exports.default.__proto__.getCurrentUser),
-        (usermod.exports.default.__proto__.getCurrentUser = () => ({
-            hasFlag: () => !0,
-        })),
-        nodes
-            .find((e) => "DeveloperExperimentStore" == e.name)
-            .actionHandler.CONNECTION_OPEN(),
-        (usermod.exports.default.__proto__.getCurrentUser = oldGetUser);
+        window.edit_logger = true;
+        console.log("%cMessage Edit Logger Enabled!", "font-size: 30px");
 
-    console.log("%cSadCord Activated!", "font-size: 45px");
-    console.log("%cExperiments Enabled!", "font-size: 30px");
-    console.log("%Message Logger Enabled!", "font-size: 30px");
-    console.log("%cNitro Spoofed!", "font-size: 30px");
-}, 15000);
+    };
+  } else if (!window.delete_logger && e.type === "MESSAGE_DELETE") {
+    FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_DELETE.find(
+        (h) => h.name === "MessageStore"
+    ).actionHandler = (args) => {
+        try {
+            document.querySelector(`#chat-messages-${args.id}`).style =
+                "background-color: black;";
+            document.querySelector(`#message-content-${args.id}`).style =
+                "color: red;";
+        } catch {}
+    };
+    window.delete_logger = true;
+    console.log("%cMessage Delete Logger Enabled!", "font-size: 30px");
+  }
+});
+findModule("_dispatcher")._dispatcher.subscribe("CONNECTION_OPEN", (e) => {
+  console.log(
+      `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
+      "font-size: 30px"
+  );
+  findModule("getCurrentUser").getCurrentUser().premiumType = 2;
+
+});
 
 // Settings info version injection
 setInterval(() => {
