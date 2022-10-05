@@ -8,6 +8,11 @@ const downloadPath = join(asarPath, '..', 'app.asar.download');
 const asarUrl = `https://github.com/GooseMod/OpenAsar/releases/download/${oaVersion.split('-')[0]}/app.asar`;
 
 module.exports = async () => { // (Try) update asar
+
+// dont try to update asar
+log('AsarUpdate', 'Not Updating...');
+
+return;
   log('AsarUpdate', 'Updating...');
 
   if (!oaVersion.includes('-')) return;
