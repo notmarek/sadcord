@@ -164,7 +164,7 @@ let interval = setInterval(() => {
                 `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
                 "font-size: 30px"
             );
-            findModule("getCurrentUser").getCurrentUser().premiumType = 2;
+            setTimeout(()=>{findModule("getCurrentUser").getCurrentUser().premiumType = 2;}, 15000); 
         });
         clearInterval(interval);
     } catch {}
