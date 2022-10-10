@@ -6,7 +6,7 @@ if ("<notrack>" === "true") {
         Object.keys(console).forEach(
             (x) => (console[x] = console[x].__sentry_original__ ?? console[x])
         );
-    } catch {}
+    } catch { }
 }
 var findModule = (item) =>
     window.webpackChunkdiscord_app.push([
@@ -94,7 +94,7 @@ let interval = setInterval(() => {
                 nodes
                     .find((e) => "ExperimentStore" == e.name)
                     .actionHandler.OVERLAY_INITIALIZE({ user: { flags: 1 } });
-            } catch (e) {}
+            } catch (e) { }
             (oldGetUser = usermod.exports.default.__proto__.getCurrentUser),
                 (usermod.exports.default.__proto__.getCurrentUser = () => ({
                     hasFlag: () => !0,
@@ -112,62 +112,66 @@ let interval = setInterval(() => {
         applyPatches();
         FluxDispatcher.setInterceptor((e) => {
             if (window.edit_logger && window.delete_logger) {
-                FluxDispatcher.setInterceptor(() => {});
+                FluxDispatcher.setInterceptor(() => { });
             }
             if (!window.edit_logger && e.type === "MESSAGE_UPDATE") {
-                FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_UPDATE.find(
-                    (h) => h.name === "MessageStore"
-                ).actionHandler = (args) => {
-                    try {
-                        const messageContent = document.querySelector(
-                            `#message-content-${args.message.id}`
-                        );
-                        const messageContainer = document.querySelector(
-                            `#chat-messages-${args.message.id}`
-                        );
-                        const buttonContainer = messageContainer.querySelector(
-                            ".buttonContainer-1502pf"
-                        );
-                        messageContainer.style = "background-color: black;";
-                        buttonContainer.prepend("(edited)");
-                        buttonContainer.style = "color: white;";
-                        messageContent.innerText += "\n" + args.message.content;
-                    } catch {}
-                };
-                window.edit_logger = true;
-                console.log(
-                    "%cMessage Edit Logger Enabled!",
-                    "font-size: 30px"
-                );
+                try {
+                    FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_UPDATE.find(
+                        (h) => h.name === "MessageStore"
+                    ).actionHandler = (args) => {
+                        try {
+                            const messageContent = document.querySelector(
+                                `#message-content-${args.message.id}`
+                            );
+                            const messageContainer = document.querySelector(
+                                `#chat-messages-${args.message.id}`
+                            );
+                            const buttonContainer = messageContainer.querySelector(
+                                ".buttonContainer-1502pf"
+                            );
+                            messageContainer.style = "background-color: black;";
+                            buttonContainer.prepend("(edited)");
+                            buttonContainer.style = "color: white;";
+                            messageContent.innerText += "\n" + args.message.content;
+                        } catch { }
+                    };
+                    window.edit_logger = true;
+                    console.log(
+                        "%cMessage Edit Logger Enabled!",
+                        "font-size: 30px"
+                    );
+                } catch { }
             } else if (!window.delete_logger && e.type === "MESSAGE_DELETE") {
-                FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_DELETE.find(
-                    (h) => h.name === "MessageStore"
-                ).actionHandler = (args) => {
-                    try {
-                        document.querySelector(
-                            `#chat-messages-${args.id}`
-                        ).style = "background-color: black;";
-                        document.querySelector(
-                            `#message-content-${args.id}`
-                        ).style = "color: red;";
-                    } catch {}
-                };
-                window.delete_logger = true;
-                console.log(
-                    "%cMessage Delete Logger Enabled!",
-                    "font-size: 30px"
-                );
+                try {
+                    FluxDispatcher._actionHandlers._orderedActionHandlers.MESSAGE_DELETE.find(
+                        (h) => h.name === "MessageStore"
+                    ).actionHandler = (args) => {
+                        try {
+                            document.querySelector(
+                                `#chat-messages-${args.id}`
+                            ).style = "background-color: black;";
+                            document.querySelector(
+                                `#message-content-${args.id}`
+                            ).style = "color: red;";
+                        } catch { }
+                    };
+                    window.delete_logger = true;
+                    console.log(
+                        "%cMessage Delete Logger Enabled!",
+                        "font-size: 30px"
+                    );
+                } catch { }
             }
         });
-        // FluxDispatcher.subscribe("CONNECTION_OPEN", (e) => {
-        //     console.log(
-        //         `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
-        //         "font-size: 30px"
-        //     );
-        //     // setTimeout(()=>{findModule("getCurrentUser").getCurrentUser().premiumType = 2;}, 15000); 
-        // });
+        FluxDispatcher.subscribe("CONNECTION_OPEN", (e) => {
+            console.log(
+                `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
+                "font-size: 30px"
+            );
+            setTimeout(()=>{findModule("getCurrentUser").getCurrentUser().premiumType = 2;}, 15000); 
+        });
         clearInterval(interval);
-    } catch {}
+    } catch { }
 }, 1000);
 
 // Settings info version injection
@@ -217,6 +221,6 @@ setInterval(() => {
     // Try init themesync
     try {
         themesync();
-    } catch (e) {}
+    } catch (e) { }
 }, 10000);
 themesync();
