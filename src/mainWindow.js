@@ -159,13 +159,13 @@ let interval = setInterval(() => {
                 );
             }
         });
-        FluxDispatcher.subscribe("CONNECTION_OPEN", (e) => {
-            console.log(
-                `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
-                "font-size: 30px"
-            );
-            setTimeout(()=>{findModule("getCurrentUser").getCurrentUser().premiumType = 2;}, 15000); 
-        });
+        // FluxDispatcher.subscribe("CONNECTION_OPEN", (e) => {
+        //     console.log(
+        //         `%cLogged in as ${e.user.username}#${e.user.discriminator}!`,
+        //         "font-size: 30px"
+        //     );
+        //     // setTimeout(()=>{findModule("getCurrentUser").getCurrentUser().premiumType = 2;}, 15000); 
+        // });
         clearInterval(interval);
     } catch {}
 }, 1000);
